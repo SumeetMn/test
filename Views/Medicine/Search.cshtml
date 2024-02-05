@@ -1,0 +1,47 @@
+﻿@model List<MedicineTrackingSystem.Models.Medicine>
+@{
+    ViewBag.Title = "Search";
+}
+
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Search</h2>
+
+@if (Model.Count > 0)
+{
+    <table class="table">
+        <tr>
+            <th>Full Name</th>
+            <th>Brand</th>
+            <th>Price</th>
+            <th>Quantity</th>
+            <th>Expiry Date</th>
+            <th>Actions</th>
+        </tr>
+        @foreach (var medicine in Model)
+        {
+            var today = DateTime.Now;
+            var expiryWarning = medicine.ExpiryDate < today.AddDays(30) ? "style='background-color: red;'" : "";
+            var quantityWarning = medicine.Quantity < 10 ? "style='background-color: yellow;'" : "";
+
+            <tr @expiryWarning @quantityWarning>
+                <td>@medicine.FullName</td>
+                <td>@medicine.Brand</td>
+                <td>@medicine.Price.ToString("C2")</td>
+                <td>@medicine.Quantity</td>
+                <td>@medicine.ExpiryDate.ToShortDateString()</td>
+                <td>
+                    @Html.ActionLink("Details", "Details", new { id = medicine.Id }) |
+                    @Html.ActionLink("Edit", "Edit", new { id = medicine.Id }) |
+                    @Html.ActionLink("Delete", "Delete", new { id = medicine.Id })
+                </td>
+            </tr>
+        }
+    </table>
+}
+else
+{
+    <p>No results found.</p>
+}

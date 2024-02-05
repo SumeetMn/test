@@ -1,0 +1,11 @@
+﻿body {
+
+.quantity-warning {
+    background-color: yellow;
+}
+
+.expiry-warning {
+    background-color: red;
+}
+
+}

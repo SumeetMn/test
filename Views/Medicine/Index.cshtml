@@ -1,0 +1,68 @@
+﻿@model List<MedicineTrackingSystem.Models.Medicine>
+@{
+    ViewBag.Title = "Medicine List";
+}
+
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<h2>Medicine List</h2>
+<input type="text" id="btnSearch" placeholder="Search" />
+<div id="TableData">
+    <table class="table">
+        <tr>
+            <th>Full Name</th>
+            <th>Brand</th>
+            <th>Price</th>
+            <th>Quantity</th>
+            <th>Expiry Date</th>
+            <th>Actions</th>
+        </tr>
+        @foreach (var medicine in Model)
+        {
+            var today = DateTime.Now;
+            var expiryWarning = medicine.ExpiryDate < today.AddDays(30) ? "style='background-color: red;'" : "";
+            var quantityWarning = medicine.Quantity < 10 ? "style='background-color: yellow;'" : "";
+
+            <tr class="medicine-row" @expiryWarning @quantityWarning>
+                <td class="medicine-name">@medicine.FullName</td>
+                <td>@medicine.Brand</td>
+                <td>@medicine.Price.ToString("C2")</td>
+                @if (medicine.Quantity < 10)
+                {
+                    <td class="quantity-warning">@medicine.Quantity</td>
+                }
+                else
+                {
+                    <td class="">@medicine.Quantity</td>
+                }
+                @if (Convert.ToDateTime(medicine.ExpiryDate) <= DateTime.Now.AddMonths(1) && Convert.ToDateTime(medicine.ExpiryDate) >= DateTime.Now.AddMonths(0))
+                {
+                    <td class="expiry-warning">@medicine.ExpiryDate.ToShortDateString()</td>
+                }
+                else
+                {
+                    <td class="">@medicine.ExpiryDate.ToShortDateString()</td>
+                }
+                <td>
+                    @Html.ActionLink("Details", "Details", new { id = medicine.Id })
+                </td>
+
+
+            </tr>
+            <div id="noDataFound" class="text-danger"></div>
+        }
+        @*<button id="addMedicineBtn" class="btn btn-primary">Add Medicine</button>*@
+    </table>
+</div>
+<script src="~/Scripts/jquery-3.4.1.min.js"></script>
+<script>
+    $(document).ready(function () {
+        $('#btnSearch').on("keyup", function () {
+            var value = $(this).val().toLowerCase();
+            $('#TableData table tbody tr').css("display", function () {
+                return this.innerText.toLowerCase().indexOf(value) > -1 ? "" : "none";
+            });
+        });
+    });
+</script>
